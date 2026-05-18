@@ -8,7 +8,7 @@
         body { font-family: arial; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #1e1c1c; margin: 0; }
         .wheel-container { position: relative; width: 500px; height: 500px; margin-bottom: 20px; }
         canvas { border-radius: 50%; box-shadow: 0 0 20px rgba(0,0,0,0.2); transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
-        .arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; z-index: 10; }
+        .arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #f9cd1f; z-index: 10; }
         button { padding: 12px 30px; font-size: 18px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 50px; transition: 0.3s; }
         button:hover { background-color: #218838; }
         button:disabled { background-color: #2f2828; cursor: not-allowed; }
@@ -42,7 +42,7 @@
             try {
                 const response = await fetch('/api/prizes');
                 prizes = await response.json();
-                console.log("Data hadiah:", prizes);
+                console.log("hadiah:", prizes);
                 drawWheel();
             } catch (error) {
                 console.error("Gagal muat data:", error);

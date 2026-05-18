@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prize;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SpinController extends Controller
 {
@@ -42,6 +43,12 @@ class SpinController extends Controller
                 break;
             }
         }
+
+        // Simpan hasil ke history_spin
+        DB::table('history_spin')->insert([
+            'hadiah' => $winner->nama_hadiah,
+            'waktu' => now(),
+        ]);
 
         return response()->json([
             'success' => true,

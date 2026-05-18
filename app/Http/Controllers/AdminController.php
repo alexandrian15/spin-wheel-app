@@ -27,6 +27,7 @@ class AdminController extends Controller
                               ->get();
 
         $history = DB::table('history_spin')
+                    ->select('id', 'hadiah', 'waktu')
                     ->orderBy('id', 'DESC')
                     ->limit($historyLimit)
                     ->get();
