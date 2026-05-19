@@ -11,5 +11,16 @@ class Prize extends Model
 
     protected $table = 'prizes';
 
-    protected $fillable = ['nama_hadiah', 'peluang', 'warna'];
+
+    protected $fillable = [
+        'nama',
+        'peluang',
+        'warna',
+        'area_id'
+];
+
+public function area()
+{
+    return $this->belongsTo(Area::class);
+}
 }

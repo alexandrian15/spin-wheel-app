@@ -15,41 +15,91 @@ class SpinController extends Controller
 
     public function getPrizes()
     {
-        // Ambil data dari database
-        $prizes = Prize::select(['id', 'nama_hadiah', 'peluang','warna'])->get();
+        $user = auth()->user();
+
+        // Jika super admin lihat semua hadiah
+        if ($user->role === 'super_admin') {
+
+            $prizes = Prize::select(
+                'id',
+                'nama_hadiah',
+                'peluang',
+                'warna'
+            )->get();
+
+        } else {
+
+            // User biasa hanya area sendiri
+            $prizes = Prize::where('area_id', $user->area_id)
+                ->select(
+                    'id',
+                    'nama_hadiah',
+                    'peluang',
+                    'warna'
+                )
+                ->get();
+        }
 
         return response()->json($prizes);
     }
 
     public function spin()
     {
-        $prizes = Prize::all();
+        $user = auth()->user();
 
-        if ($prizes->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'Tidak ada hadiah']);
+        // Ambil hadiah berdasarkan area
+        if ($user->role === 'super_admin') {
+
+            $prizes = Prize::all();
+
+        } else {
+
+            $prizes = Prize::where(
+                'area_id',
+                $user->area_id
+            )->get();
         }
 
-        // Logika Weighted Random
+        // Jika hadiah kosong
+        if ($prizes->isEmpty()) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada hadiah tersedia'
+            ]);
+        }
+
+        // Hitung total peluang
         $totalWeight = $prizes->sum('peluang');
+
+        // Random angka
         $randomValue = rand(1, $totalWeight);
-        
+
         $currentWeight = 0;
+
         $winner = null;
 
+        // Weighted random
         foreach ($prizes as $prize) {
+
             $currentWeight += $prize->peluang;
+
             if ($randomValue <= $currentWeight) {
+
                 $winner = $prize;
+
                 break;
             }
         }
 
-        // Simpan hasil ke history_spin
+        // Simpan history spin
         DB::table('history_spin')->insert([
             'hadiah' => $winner->nama_hadiah,
+            'area_id' => $user->area_id,
             'waktu' => now(),
         ]);
 
+        // Response hasil spin
         return response()->json([
             'success' => true,
             'winner_id' => $winner->id,
