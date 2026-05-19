@@ -15,7 +15,7 @@ class AdminController extends Controller
         $limit = (int) $request->input('limit', 10);
         $historyLimit = (int) $request->input('history_limit', 10);
 
-        $hadiahQuery = DB::table('hadiah');
+        $hadiahQuery = DB::table('prizes');
 
         if (!empty($search)) {
             $hadiahQuery->where('nama_hadiah', 'like', "%{$search}%")
