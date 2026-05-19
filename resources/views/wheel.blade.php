@@ -13,9 +13,139 @@
         button:hover { background-color: #218838; }
         button:disabled { background-color: #2f2828; cursor: not-allowed; }
         #result { margin-top: 20px; font-size: 20px; font-weight: bold; color: #f8f8f8; }
+        .area-badge{position: fixed;top: 25px;right: 25px;z-index: 999;background:linear-gradient(135deg,#ff1744,#ff4d6d,#ff758f);padding: 5px 5px;border-radius: 24px;
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 40px rgba(255,0,80,0.45);
+
+    border:
+        1px solid rgba(255,255,255,0.15);
+
+    backdrop-filter: blur(14px);
+
+    min-width: 240px;
+
+    transition: 0.35s;
+}
+
+.area-badge:hover{
+    transform:
+        translateY(-4px)
+        scale(1.03);
+}
+
+.badge-glow{
+    position: absolute;
+
+    width: 140px;
+    height: 140px;
+
+    background:
+        rgba(255,255,255,0.22);
+
+    border-radius: 50%;
+
+    top: -60px;
+    right: -60px;
+
+    filter: blur(25px);
+}
+
+.badge-content{
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.badge-dot{
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    animation: pulse 1.5s infinite;
+}
+
+.badge-label{
+    margin: 0;
+
+    font-size: 11px;
+
+    letter-spacing: 4px;
+
+    font-weight: 700;
+
+    opacity: 0.8;
+
+    color: white;
+}
+
+.badge-title{
+    margin: 3px 0 0 0;
+
+    font-size: 28px;
+
+    font-weight: 900;
+
+    color: white;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 4px 10px rgba(0,0,0,0.25);
+}
+
+@keyframes pulse{
+
+    0%{
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50%{
+        transform: scale(1.4);
+        opacity: 0.5;
+    }
+
+    100%{
+        transform: scale(1);
+        opacity: 1;
+    }
+}
     </style>
 </head>
 <body>
+
+<div class="area-badge">
+
+    <div class="badge-glow"></div>
+
+    <div class="badge-content">
+
+        <div class="badge-dot"></div>
+
+        <div>
+
+            <p class="badge-label">
+                ACTIVE AREA
+            </p>
+
+            <h2 class="badge-title">
+                {{ auth()->user()->area->name ?? '-' }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</div>
 
     <div class="wheel-container">
         <div class="arrow"></div>
