@@ -119,9 +119,79 @@
         opacity: 1;
     }
 }
+
+.logout-container{
+
+    position: fixed;
+
+    top: 25px;
+
+    left: 25px;
+
+    z-index: 999;
+}
+
+.logout-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1f2937
+        );
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 24px;
+
+    border-radius: 18px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.35);
+}
+
+.logout-btn:hover{
+
+    transform:
+        translateY(-3px)
+        scale(1.05);
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        );
+}
     </style>
 </head>
 <body>
+
+<div class="logout-container">
+
+    <form method="POST" action="{{ route('logout') }}">
+
+        @csrf
+
+        <button type="submit" class="logout-btn">
+
+            Logout
+
+        </button>
+
+    </form>
+
+</div>
 
 <div class="area-badge">
 

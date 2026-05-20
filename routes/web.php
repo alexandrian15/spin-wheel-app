@@ -25,9 +25,27 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/', [SpinController::class, 'index']);           // Tampilan utama
-Route::get('/api/prizes', [SpinController::class, 'getPrizes']); // API ambil data
-Route::post('/api/spin', [SpinController::class, 'spin']);     // API putar
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Halaman Spin Wheel
+    Route::get('/', [
+        SpinController::class,
+        'index'
+    ])->name('spin');
+
+    // API hadiah sesuai area user
+    Route::get('/api/prizes', [
+        SpinController::class,
+        'getPrizes'
+    ]);
+
+    // API spin sesuai area user
+    Route::post('/api/spin', [
+        SpinController::class,
+        'spin'
+    ]);
+
+});
 
 // Admin routes - Harus login terlebih dahulu
 Route::middleware(['auth', 'verified'])->group(function () {

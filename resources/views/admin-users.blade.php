@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-black-200 dark:text-black-200 leading-tight">
             Manage Users Area
         </h2>
     </x-slot>

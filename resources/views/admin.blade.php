@@ -304,9 +304,71 @@ body{
     flex:1;
 }
 
+
+
 </style>
 </head>
 <body>
+
+<div style="
+    position:fixed;
+    top:25px;
+    right:25px;
+    z-index:9999;
+">
+
+    <form method="POST" action="{{ route('logout') }}">
+
+        @csrf
+
+        <button
+            type="submit"
+            style="
+                background:transparent;
+                border:none;
+                cursor:pointer;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            "
+        >
+
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="52"
+                height="52"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="#d5c1c1"
+                stroke-width="2.2"
+                style="
+                    transition:0.25s;
+                "
+                onmouseover="
+                    this.style.transform='scale(1.12)';
+                    this.style.stroke='#ff444a';
+                "
+                onmouseout="
+                    this.style.transform='scale(1)';
+                    this.style.stroke='#fcfcfc';
+                "
+            >
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1
+                    a2 2 0 01-2 2H6a2 2 0 01-2-2V7
+                    a2 2 0 012-2h5a2 2 0 012 2v1"
+                />
+
+            </svg>
+
+        </button>
+
+    </form>
+
+</div>
 
 <div class="container">
 

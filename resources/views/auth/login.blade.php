@@ -43,5 +43,22 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+        <div class="flex items-center justify-end mt-4 gap-3">
+
+    @if (Route::has('register'))
+
+        <a
+            href="{{ route('register') }}"
+            class="inline-flex items-center px-4 py-2
+                   bg-red-600 hover:bg-red-700
+                   text-white text-sm font-semibold
+                   rounded-xl transition duration-300"
+        >
+            Register User Baru
+        </a>
+
+    @endif
+
+</div>
     </form>
 </x-guest-layout>
