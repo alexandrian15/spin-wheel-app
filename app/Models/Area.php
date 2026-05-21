@@ -6,17 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    protected $fillable = [
-        'name'
-    ];
-
+    // Satu area memiliki banyak user
     public function users()
     {
         return $this->hasMany(User::class);
     }
 
-    public function hadiahs()
+    // Satu area memiliki banyak data inputan (Melalui User)
+    public function spinInputs()
     {
-        return $this->hasMany(Hadiah::class);
+        return $this->hasManyThrough(SpinInput::class, User::class);
     }
 }

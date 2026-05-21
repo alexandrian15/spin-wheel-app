@@ -50,7 +50,7 @@ class SpinController extends Controller
         // Ambil hadiah berdasarkan area
         if ($user->role === 'super_admin') {
 
-            $prizes = Prize::all();
+            $prizes = Prize::all(); 
 
         } else {
 
@@ -94,10 +94,11 @@ class SpinController extends Controller
 
         // Simpan history spin
         DB::table('history_spin')->insert([
-            'hadiah' => $winner->nama_hadiah,
-            'area_id' => $user->area_id,
-            'waktu' => now(),
-        ]);
+    'user_id' => $user->id,
+    'hadiah' => $winner->nama_hadiah,
+    'area_id' => $user->area_id,
+    'waktu' => now(),
+]);
 
         // Response hasil spin
         return response()->json([

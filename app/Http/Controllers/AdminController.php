@@ -5,19 +5,119 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Prize;
+use App\Models\Area;
 
 class AdminController extends Controller
 {
     public function index(Request $request)
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
 
-        $search = $request->input('search', '');
+    // =========================
+    // DATA HADIAH
+    // =========================
 
-        $limit = (int) $request->input('limit', 10);
+   if ($user->role === 'super_admin') {
 
-        $historyLimit = (int) $request->input('history_limit', 10);
+    $hadiah = Prize::with('area');
 
+    // Filter area khusus super admin
+    if (
+        $request->filled('filter_area')
+        && $request->filter_area != ''
+    ) {
+
+        $hadiah->where(
+            'area_id',
+            $request->filter_area
+        );
+
+    }
+
+} else {
+
+    // Admin biasa hanya area sendiri
+    $hadiah = Prize::with('area')
+        ->where(
+            'area_id',
+            $user->area_id
+        );
+
+}
+
+    // Search
+    if ($request->search) {
+
+        $hadiah->where(function ($q) use ($request) {
+
+            $q->where(
+                'nama_hadiah',
+                'like',
+                '%' . $request->search . '%'
+            )
+            ->orWhere(
+                'peluang',
+                'like',
+                '%' . $request->search . '%'
+            );
+
+        });
+
+    }
+
+    $limit = $request->limit ?? 10;
+
+    $hadiah = $hadiah
+        ->orderBy('id', 'asc')
+        ->limit($limit)
+        ->get();
+
+    // =========================
+    // HISTORY
+    // =========================
+$historyLimit = $request->history_limit ?? 10;
+
+
+    $history = DB::table('history_spin')
+    ->leftJoin('areas', 'history_spin.area_id', '=', 'areas.id');
+    
+    if (
+    $user->role === 'super_admin'
+    && $request->history_area
+) {
+
+    $history->where(
+        'history_spin.area_id',
+        $request->history_area
+    );
+
+}
+
+$history = $history
+    ->select(
+        'history_spin.id',
+        'history_spin.hadiah',
+        'history_spin.waktu',
+        'history_spin.area_id',
+        'areas.name'
+    )
+
+    ->orderByDesc('history_spin.id')
+    ->limit($historyLimit)
+    ->get();
+    // =========================
+    // AREAS
+    // =========================
+
+    $areas = Area::all();
+
+    return view('admin', compact(
+        'hadiah',
+        'history',
+        'areas',
+        'limit',
+        'historyLimit'
+    ));
     
     
 
@@ -68,26 +168,23 @@ class AdminController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $historyQuery = DB::table('history_spin');
+    $historyQuery = DB::table('history_spin');
 
-        // Jika bukan super admin
-        if ($user->role !== 'super_admin') {
+// Jika bukan super admin
+if ($user->role !== 'super_admin') {
+    $historyQuery->where('area_id', $user->area_id);
+}
 
-            $historyQuery->where(
-                'area_id',
-                $user->area_id
-            );
-        }
-
-        $history = $historyQuery
-            ->select(
-                'id',
-                'hadiah',
-                'waktu'
-            )
-            ->orderBy('id', 'DESC')
-            ->limit($historyLimit)
-            ->get();
+$history = $historyQuery
+    ->select(
+        'id',
+        'area_id',
+        'hadiah',
+        'waktu' // <-- GANTI dengan nama kolom asli di tabel history_spin Anda (misal: 'username' atau 'name')
+    )
+    ->orderBy('id', 'DESC')
+    ->limit($historyLimit)
+    ->get();
 
         return view(
             'admin',
@@ -108,24 +205,32 @@ class AdminController extends Controller
     */
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nama_hadiah' => 'required|string|max:255',
-            'peluang' => 'required|numeric|min:1|max:100',
-            'warna' => 'nullable|string'
-        ]);
+{
+    $user = auth()->user();
 
-        // otomatis area user login
-        $validated['area_id'] = auth()->user()->area_id;
+    $validated = $request->validate([
+        'nama_hadiah' => 'required|string|max:255',
+        'peluang' => 'required|numeric|min:1|max:100',
+        'warna' => 'nullable|string',
+    ]);
 
-        Prize::create($validated);
+    // Admin area otomatis area sendiri
+    if ($user->role !== 'super_admin') {
 
-        return redirect('/admin')
-            ->with(
-                'success',
-                'Hadiah berhasil ditambahkan'
-            );
+        $validated['area_id'] = $user->area_id;
+
+    } else {
+
+        // Super admin pilih area manual
+        $validated['area_id'] = $request->area_id;
+
     }
+
+    Prize::create($validated);
+
+    return redirect('/admin')
+        ->with('success', 'Hadiah berhasil ditambahkan');
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -215,7 +320,7 @@ class AdminController extends Controller
             ->get();
 
         $areas = DB::table('areas')->get();
-
+$areas = Area::all();
         return view(
             'admin-users',
             compact(

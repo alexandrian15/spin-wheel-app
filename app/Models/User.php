@@ -27,11 +27,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'string', // Pastikan role di-cast sebagai string
         ];
     }
+    // User dimiliki oleh satu area
     public function area()
-{
-    return $this->belongsTo(Area::class);
-}
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    // User memiliki banyak inputan spin
+    public function spinInputs()
+    {
+        return $this->hasMany(SpinInput::class);
+    }
 
 }

@@ -13,7 +13,7 @@ class Prize extends Model
 
 
     protected $fillable = [
-        'nama',
+        'nama_hadiah',
         'peluang',
         'warna',
         'area_id'

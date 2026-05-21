@@ -15,8 +15,13 @@ return new class extends Migration
                   ->nullable()
                   ->after('id');
 
+            $table->unsignedBigInteger('user_id')
+                  ->nullable()
+                  ->after('area_id');
+
         });
 
+        // Isi data lama
         DB::table('history_spin')->update([
             'area_id' => 1
         ]);
@@ -28,6 +33,11 @@ return new class extends Migration
                   ->on('areas')
                   ->onDelete('cascade');
 
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+
         });
     }
 
@@ -36,7 +46,10 @@ return new class extends Migration
         Schema::table('history_spin', function (Blueprint $table) {
 
             $table->dropForeign(['area_id']);
+            $table->dropForeign(['user_id']);
+
             $table->dropColumn('area_id');
+            $table->dropColumn('user_id');
 
         });
     }

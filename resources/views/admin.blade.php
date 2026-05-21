@@ -433,10 +433,35 @@ body{
                         value="#3b82f6"
                     >
                 </div>
+                @if(auth()->user()->role === 'super_admin')
+
+<div class="form-group">
+
+    <label for="area_id">Pilih Area</label>
+
+    <select name="area_id" id="area_id" required>
+
+        <option value="">-- Pilih Area --</option>
+
+        @foreach($areas as $area)
+
+            <option value="{{ $area->id }}">
+                {{ $area->name }}
+            </option>
+
+        @endforeach
+
+    </select>
+
+</div>
+
+@endif
 
                 <button type="submit" class="btn btn-success" style="width:100%;">
                     Tambah Hadiah
                 </button>
+
+                
 
             </form>
 
@@ -451,6 +476,45 @@ body{
             <h2 class="card-title">
                 DATA HADIAH 
             </h2>
+            @if(auth()->user()->role === 'super_admin')
+
+<form method="GET" style="margin-bottom:20px;">
+
+    <div class="input-row">
+
+        <div class="form-group">
+
+            <label>Filter Area</label>
+
+            <select
+                name="filter_area"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    Semua Area
+                </option>
+
+                @foreach($areas as $area)
+
+                    <option
+                        value="{{ $area->id }}"
+                        {{ request('filter_area') == $area->id ? 'selected' : '' }}
+                    >
+                        {{ $area->name }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+    </div>
+
+</form>
+
+@endif
 
             <div class="history-filter" style="margin-bottom:20px;">
                 <form method="GET" class="input-row" style="align-items:flex-end; gap:12px; flex-wrap:wrap;">
@@ -493,8 +557,13 @@ body{
                         <tr>
                             <th>ID</th>
                             <th>Nama Hadiah</th>
-                            <th>Peluang</th>
-                            <th>Aksi</th>
+<th>Peluang</th>
+
+@if(auth()->user()->role === 'super_admin')
+    <th>Area</th>
+@endif
+
+<th>Aksi</th>
                         </tr>
 
                     </thead>
@@ -516,6 +585,15 @@ body{
                             <td>
                                 {{ $item->peluang }}%
                             </td>
+                            @if(auth()->user()->role === 'super_admin')
+
+<td>
+    <span class="badge">
+        {{ $item->area->name?? '-' }}
+    </span>
+</td>
+
+@endif
 
                             <td>
                                 <div class="actions">
@@ -571,6 +649,45 @@ body{
         <h2 class="card-title">
             History Spin Database
         </h2>
+        @if(auth()->user()->role === 'super_admin')
+
+<form method="GET" style="margin-bottom:20px;">
+
+    <div class="input-row">
+
+        <div class="form-group">
+
+            <label>Filter History Area</label>
+
+            <select
+                name="history_area"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    Semua Area
+                </option>
+
+                @foreach($areas as $area)
+
+                    <option
+                        value="{{ $area->id }}"
+                        {{ request('history_area') == $area->id ? 'selected' : '' }}
+                    >
+                        {{ $area->name }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+    </div>
+
+</form>
+
+@endif
 
         <div class="history-filter" style="margin-bottom:20px;">
             <form method="GET" style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
@@ -595,7 +712,11 @@ body{
                     <tr>
                         <th>ID</th>
                         <th>Hadiah</th>
+        @if(auth()->user()->role === 'super_admin')
+            <th>Area</th>
+        @endif
                         <th>Waktu</th>
+
                     </tr>
 
                 </thead>
@@ -613,6 +734,15 @@ body{
                         <td>
                             {{ $item->hadiah }}
                         </td>
+                        @if(auth()->user()->role === 'super_admin')
+
+<td>
+    <span class="badge">
+        {{ $item->name ?? '-' }}
+    </span>
+</td>
+
+@endif
 
                         <td>
                             {{ $item->waktu }}
@@ -691,6 +821,7 @@ body{
                 <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
                     Batal
                 </button>
+                
                 <button type="submit" class="btn btn-primary">
                     Simpan
                 </button>
