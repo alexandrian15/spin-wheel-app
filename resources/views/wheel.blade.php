@@ -5,166 +5,408 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laravel Spin Wheel</title>
     <style>
-        body { font-family: arial; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #1e1c1c; margin: 0; }
-        .wheel-container { position: relative; width: 500px; height: 500px; margin-bottom: 20px; }
-        canvas { border-radius: 50%; box-shadow: 0 0 20px rgba(0,0,0,0.2); transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
-        .arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #f9cd1f; z-index: 10; }
-        button { padding: 12px 30px; font-size: 18px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 50px; transition: 0.3s; }
-        button:hover { background-color: #218838; }
-        button:disabled { background-color: #2f2828; cursor: not-allowed; }
-        #result { margin-top: 20px; font-size: 20px; font-weight: bold; color: #f8f8f8; }
-        .area-badge{position: fixed;top: 25px;right: 25px;z-index: 999;background:linear-gradient(135deg,#ff1744,#ff4d6d,#ff758f);padding: 5px 5px;border-radius: 24px;
-    overflow: hidden;
 
-    box-shadow:
-        0 10px 40px rgba(255,0,80,0.45);
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-    border:
-        1px solid rgba(255,255,255,0.15);
-
-    backdrop-filter: blur(14px);
-
-    min-width: 240px;
-
-    transition: 0.35s;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
 }
 
-.area-badge:hover{
-    transform:
-        translateY(-4px)
-        scale(1.03);
-}
+body{
 
-.badge-glow{
-    position: absolute;
+    min-height:100vh;
 
-    width: 140px;
-    height: 140px;
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
 
     background:
-        rgba(255,255,255,0.22);
-
-    border-radius: 50%;
-
-    top: -60px;
-    right: -60px;
-
-    filter: blur(25px);
+        linear-gradient(
+            135deg,
+            #071120 0%,
+            #0f172a 45%,
+            #111827 100%
+        );
 }
 
-.badge-content{
-    position: relative;
+/*
+=========================
+BACKGROUND EFFECT
+=========================
+*/
 
-    display: flex;
+body::before{
 
-    align-items: center;
+    content:'';
 
-    gap: 14px;
+    position:absolute;
+
+    width:550px;
+    height:550px;
+
+    background:#ff5f1f;
+
+    top:-220px;
+    left:-180px;
+
+    border-radius:50%;
+
+    filter:blur(140px);
+
+    opacity:0.12;
 }
 
-.badge-dot{
-    width: 14px;
-    height: 14px;
+body::after{
 
-    border-radius: 50%;
+    content:'';
 
-    background: #fff;
+    position:absolute;
 
-    animation: pulse 1.5s infinite;
+    width:500px;
+    height:500px;
+
+    background:#ff1744;
+
+    bottom:-220px;
+    right:-180px;
+
+    border-radius:50%;
+
+    filter:blur(150px);
+
+    opacity:0.08;
+}
+
+/*
+=========================
+TITLE
+=========================
+*/
+
+.page-title{
+
+    color:white;
+
+    font-size:58px;
+
+    font-weight:800;
+
+    letter-spacing:-2px;
+
+    margin-bottom:8px;
+
+    z-index:2;
+}
+
+.page-subtitle{
+
+    color:#94a3b8;
+
+    font-size:16px;
+
+    margin-bottom:40px;
+
+    z-index:2;
+}
+
+/*
+=========================
+WHEEL CARD
+=========================
+*/
+
+.wheel-container{
+
+    position:relative;
+
+    width:600px;
+    height:600px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:40px;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    border:
+        1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.45);
+
+    z-index:2;
+}
+
+/*
+=========================
+CANVAS
+=========================
+*/
+
+canvas{
+
+    border-radius:50%;
+
+    border:14px solid rgba(255,255,255,0.92);
+
+    box-shadow:
+        0 0 40px rgba(255,95,31,0.18),
+        0 0 90px rgba(255,95,31,0.12);
+
+    transition:
+        transform 5s cubic-bezier(0.17,0.67,0.2,1);
+}
+
+/*
+=========================
+CENTER CIRCLE
+=========================
+*/
+
+.wheel-container::before{
+
+    content:'SPIN';
+
+    position:absolute;
+
+    width:130px;
+    height:130px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f3f4f6
+        );
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#0f172a;
+
+    font-size:24px;
+
+    font-weight:800;
+
+    z-index:20;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.35);
+}
+
+/*
+=========================
+ARROW
+=========================
+*/
+
+.arrow{
+
+    position:absolute;
+
+    top:18px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:0;
+    height:0;
+
+    border-left:24px solid transparent;
+    border-right:24px solid transparent;
+    border-top:46px solid #ff6b00;
+
+    z-index:25;
+
+    filter:
+        drop-shadow(0 10px 15px rgba(0,0,0,0.35));
+}
+
+/*
+=========================
+BUTTON
+=========================
+*/
+
+button{
+
+    margin-top:35px;
+
+    padding:18px 42px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff5f1f,
+            #ff7b00
+        );
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    letter-spacing:0.5px;
+
+    cursor:pointer;
+
+    transition:0.35s;
+
+    box-shadow:
+        0 15px 40px rgba(255,95,31,0.35);
+
+    z-index:2;
+}
+
+button:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.04);
+}
+
+button:disabled{
+
+    opacity:0.6;
+
+    cursor:not-allowed;
+}
+
+/*
+=========================
+RESULT
+=========================
+*/
+
+#result{
+
+    margin-top:28px;
+
+    color:white;
+
+    font-size:26px;
+
+    font-weight:700;
+
+    text-align:center;
+
+    z-index:2;
+}
+
+/*
+=========================
+AREA BADGE
+=========================
+*/
+
+.area-badge{
+
+    position:fixed;
+
+    top:25px;
+    right:25px;
+
+    z-index:999;
+
+    padding:18px 24px;
+
+    border-radius:28px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(16px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35);
 }
 
 .badge-label{
-    margin: 0;
 
-    font-size: 11px;
+    color:#94a3b8;
 
-    letter-spacing: 4px;
+    font-size:11px;
 
-    font-weight: 700;
+    letter-spacing:4px;
 
-    opacity: 0.8;
-
-    color: white;
+    font-weight:700;
 }
 
 .badge-title{
-    margin: 3px 0 0 0;
 
-    font-size: 28px;
+    margin-top:5px;
 
-    font-weight: 900;
+    color:white;
 
-    color: white;
+    font-size:30px;
 
-    letter-spacing: 1px;
-
-    text-shadow:
-        0 4px 10px rgba(0,0,0,0.25);
+    font-weight:800;
 }
 
-@keyframes pulse{
-
-    0%{
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50%{
-        transform: scale(1.4);
-        opacity: 0.5;
-    }
-
-    100%{
-        transform: scale(1);
-        opacity: 1;
-    }
-}
+/*
+=========================
+LOGOUT
+=========================
+*/
 
 .logout-container{
 
-    position: fixed;
+    position:fixed;
 
-    top: 25px;
+    top:25px;
+    left:25px;
 
-    left: 25px;
-
-    z-index: 999;
+    z-index:999;
 }
 
 .logout-btn{
 
     background:
-        linear-gradient(
-            135deg,
-            #111827,
-            #1f2937
-        );
+        rgba(255,255,255,0.05);
 
-    color: white;
+    border:
+        1px solid rgba(255,255,255,0.08);
 
-    border: none;
+    backdrop-filter:blur(16px);
 
-    padding: 12px 24px;
+    color:white;
 
-    border-radius: 18px;
+    padding:14px 28px;
 
-    font-size: 14px;
+    border-radius:20px;
 
-    font-weight: 700;
+    font-size:14px;
 
-    cursor: pointer;
+    font-weight:700;
 
-    transition: 0.3s;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,0.35);
+    transition:0.3s;
 }
 
 .logout-btn:hover{
-
-    transform:
-        translateY(-3px)
-        scale(1.05);
 
     background:
         linear-gradient(
@@ -173,7 +415,398 @@
             #ef4444
         );
 }
-    </style>
+
+/*
+=========================
+RESPONSIVE
+=========================
+*/
+
+@media(max-width:768px){
+
+    .page-title{
+
+        font-size:38px;
+
+        text-align:center;
+    }
+
+    .wheel-container{
+
+        width:95%;
+        height:auto;
+
+        padding:20px;
+    }
+
+    canvas{
+
+        width:100%;
+        height:auto;
+    }
+
+}
+
+/*
+=========================
+SUPER POPUP
+=========================
+*/
+
+.winner-popup{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,95,31,0.15),
+            rgba(0,0,0,0.88)
+        );
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    overflow:hidden;
+
+    transition:0.4s;
+}
+
+.winner-popup.active{
+
+    opacity:1;
+
+    visibility:visible;
+}
+
+/*
+=========================
+FLASH EFFECT
+=========================
+*/
+
+.flash{
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    background:white;
+
+    opacity:0;
+
+    animation:flashAnim 0.8s ease;
+}
+
+@keyframes flashAnim{
+
+    0%{
+        opacity:0;
+    }
+
+    20%{
+        opacity:0.9;
+    }
+
+    100%{
+        opacity:0;
+    }
+}
+
+/*
+=========================
+POPUP CARD
+=========================
+*/
+
+.popup-card{
+
+    position:relative;
+
+    width:500px;
+
+    padding:70px 50px;
+
+    border-radius:42px;
+
+    overflow:hidden;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0f172a,
+            #111827,
+            #1e293b
+        );
+
+    border:
+        2px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 0 40px rgba(255,95,31,0.35),
+        0 0 100px rgba(255,95,31,0.15),
+        0 30px 80px rgba(0,0,0,0.55);
+
+    transform:
+        scale(0.5)
+        rotate(-10deg);
+
+    transition:0.45s;
+}
+
+.winner-popup.active .popup-card{
+
+    transform:
+        scale(1)
+        rotate(0deg);
+
+    animation:
+        shakeCard 0.6s ease;
+}
+
+@keyframes shakeCard{
+
+    0%{
+        transform:scale(1) rotate(0);
+    }
+
+    25%{
+        transform:scale(1.03) rotate(-2deg);
+    }
+
+    50%{
+        transform:scale(1.03) rotate(2deg);
+    }
+
+    75%{
+        transform:scale(1.02) rotate(-1deg);
+    }
+
+    100%{
+        transform:scale(1) rotate(0);
+    }
+}
+
+/*
+=========================
+GLOW
+=========================
+*/
+
+.popup-glow{
+
+    position:absolute;
+
+    width:320px;
+    height:320px;
+
+    background:#ff5f1f;
+
+    border-radius:50%;
+
+    top:-150px;
+    right:-120px;
+
+    filter:blur(120px);
+
+    opacity:0.4;
+}
+
+/*
+=========================
+TROPHY
+=========================
+*/
+
+.popup-icon{
+
+    font-size:110px;
+
+    animation:
+        trophyJump 1s infinite;
+
+    position:relative;
+
+    z-index:5;
+
+    filter:
+        drop-shadow(0 0 25px rgba(255,215,0,0.6));
+}
+
+@keyframes trophyJump{
+
+    0%{
+        transform:translateY(0) scale(1);
+    }
+
+    50%{
+        transform:translateY(-18px) scale(1.08);
+    }
+
+    100%{
+        transform:translateY(0) scale(1);
+    }
+}
+
+/*
+=========================
+TEXT
+=========================
+*/
+
+.popup-title{
+
+    color:white;
+
+    font-size:52px;
+
+    font-weight:900;
+
+    margin-top:12px;
+
+    letter-spacing:2px;
+
+    text-shadow:
+        0 0 25px rgba(255,255,255,0.2);
+
+    position:relative;
+
+    z-index:5;
+}
+
+.popup-sub{
+
+    color:#cbd5e1;
+
+    margin-top:12px;
+
+    font-size:16px;
+
+    position:relative;
+
+    z-index:5;
+}
+
+.popup-prize{
+
+    color:#ff7b00;
+
+    font-size:42px;
+
+    font-weight:900;
+
+    margin-top:24px;
+
+    text-transform:uppercase;
+
+    text-shadow:
+        0 0 30px rgba(255,123,0,0.75);
+
+    animation:
+        glowPrize 1s infinite alternate;
+
+    position:relative;
+
+    z-index:5;
+}
+
+@keyframes glowPrize{
+
+    from{
+        text-shadow:
+            0 0 20px rgba(255,123,0,0.4);
+    }
+
+    to{
+        text-shadow:
+            0 0 40px rgba(255,123,0,1);
+    }
+}
+
+/*
+=========================
+BUTTON
+=========================
+*/
+
+.popup-card button{
+
+    margin-top:35px;
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff5f1f,
+            #ff1744
+        );
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 15px 40px rgba(255,95,31,0.35);
+}
+
+/*
+=========================
+CONFETTI
+=========================
+*/
+
+.confetti{
+
+    position:absolute;
+
+    width:14px;
+    height:14px;
+
+    background:red;
+
+    top:-20px;
+
+    animation:
+        confettiFall linear forwards;
+}
+
+@keyframes confettiFall{
+
+    to{
+
+        transform:
+            translateY(110vh)
+            rotate(720deg);
+
+        opacity:0;
+    }
+
+}
+</style>
 </head>
 <body>
 
@@ -216,6 +849,13 @@
     </div>
 
 </div>
+<h1 class="page-title">
+    SPIN WHEEL EVENT
+</h1>
+
+<p class="page-subtitle">
+    Putar roda keberuntungan dan dapatkan hadiah menarik
+</p>
 
     <div class="wheel-container">
         <div class="arrow"></div>
@@ -224,6 +864,38 @@
 
     <button id="spinBtn">PUTAR RODA!</button>
     <div id="result"></div>
+
+<div class="winner-popup" id="winnerPopup">
+
+    <div class="flash"></div>
+
+    <div class="popup-card">
+
+        <div class="popup-glow"></div>
+
+        <div class="popup-icon">
+            🏆
+        </div>
+
+        <h2 class="popup-title">
+            JACKPOT!
+        </h2>
+
+        <p class="popup-sub">
+            Kamu berhasil memenangkan hadiah
+        </p>
+
+        <h1 class="popup-prize" id="popupPrize">
+            HADIAH
+        </h1>
+
+        <button onclick="closePopup()">
+            CLAIM HADIAH
+        </button>
+
+    </div>
+
+</div>
 
     <script>
         const canvas = document.getElementById('wheelCanvas');
@@ -374,19 +1046,107 @@ function animateSpin(winnerId) {
     =========================
     */
 
-    setTimeout(() => {
+   setTimeout(() => {
 
-        resultDiv.textContent =
-            "🎉 Selamat! Kamu dapat: "
-            + prizes[winnerIndex].nama_hadiah;
+    const hadiah =
+        prizes[winnerIndex].nama_hadiah;
 
-        spinBtn.disabled = false;
+    resultDiv.textContent =
+        "🎉 Selamat! Kamu dapat: "
+        + hadiah;
 
-    },4000);
+    /*
+    =========================
+    SHOW POPUP
+    =========================
+    */
+
+    document
+        .getElementById('popupPrize')
+        .innerText = hadiah;
+
+    document
+        .getElementById('winnerPopup')
+        .classList
+        .add('active');
+
+    /*
+    =========================
+    SOUND EFFECT
+    =========================
+    */
+
+    const audio =
+        new Audio(
+            'https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'
+        );
+
+    audio.play();
+
+    /*
+    =========================
+    ENABLE BUTTON
+    =========================
+    */
+
+    spinBtn.disabled = false;
+
+},4000);
+
+function createConfetti(){
+
+    for(let i=0;i<120;i++){
+
+        const confetti =
+            document.createElement('div');
+
+        confetti.classList.add('confetti');
+
+        confetti.style.left =
+            Math.random() * 100 + 'vw';
+
+        confetti.style.background =
+            [
+                '#ff1744',
+                '#ff7b00',
+                '#ffd700',
+                '#00e5ff',
+                '#ffffff'
+            ][Math.floor(Math.random()*5)];
+
+        confetti.style.animationDuration =
+            (Math.random()*3+2)+'s';
+
+        confetti.style.opacity =
+            Math.random();
+
+        confetti.style.transform =
+            `rotate(${Math.random()*360}deg)`;
+
+        document.body.appendChild(confetti);
+
+        setTimeout(()=>{
+            confetti.remove();
+        },5000);
+    }
+}
 
 }
 
         loadPrizes();
+
+        function closePopup(){
+
+    document
+        .getElementById('winnerPopup')
+        .classList
+        .remove('active');
+}
+createConfetti();
+
+navigator.vibrate?.([300,100,300]);
     </script>
+
+
 </body>
 </html>
